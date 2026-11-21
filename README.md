@@ -1,5 +1,7 @@
 # EvidenceTrail
 
+Built for the ODSC × Nebius Hackathon from the [official project template](https://github.com/odsc2015/nebius-research-agent-hackaton-template).
+
 EvidenceTrail is a research agent that turns a question into a traceable report. It uses [Nebius Token Factory](https://tokenfactory.nebius.com/) for planning, evidence evaluation, and synthesis, and [Tavily](https://tavily.com/) for live search. Every citation ID is checked against the retrieved source list before the report is shown.
 
 It is intended for students, analysts, and researchers who need a fast first pass on a question while keeping the source trail available for their own review.
