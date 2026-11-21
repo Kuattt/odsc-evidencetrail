@@ -27,7 +27,14 @@ flowchart LR
 3. Run `streamlit run app.py` from this directory.
 4. Ask a question of at least 12 characters and click **Research with live sources**.
 
-On this machine, dependencies may be installed in `.deps`; use `PYTHONPATH=.deps python3 -m streamlit run app.py`.
+On this Ubuntu machine, `python3-venv` is unavailable. The verified local setup is:
+
+```bash
+python3 -m pip install --target .deps -r requirements.txt
+PYTHONPATH=.deps python3 -m streamlit run app.py --global.developmentMode false --server.address 127.0.0.1
+```
+
+For a CLI live run that saves the JSON trace under the ignored `artifacts/` directory, use `PYTHONPATH=.deps python3 scripts/live_run.py`.
 
 ## Research flow
 
