@@ -5,3 +5,4 @@
 - Browser recording is available through local Playwright and Chrome. FFmpeg is installed locally through `imageio-ffmpeg`.
 - Public GitHub push requires review and user confirmation.
 - Official form submission requires final user approval.
+- The stated deadline, 2026-11-20 23:59 EST / 2026-11-21 04:59 UTC, has passed without a valid video or successful Nebius inference. No submission was sent.

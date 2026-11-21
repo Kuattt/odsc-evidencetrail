@@ -11,3 +11,4 @@
 - 2026-11-21: Nebius Builder Program form showed “Thank you! We received your application.” Nebius inference still returns HTTP 402.
 - 2026-11-21: Builder Program email says application review may take two business days. User chose free credits only. No purchase will be made.
 - 2026-11-21: User approved public GitHub publication. Repository created from official template, project code pushed to `main`, and anonymous HTTP 200 plus PUBLIC visibility verified.
+- 2026-11-21 05:10 UTC: Deadline has passed. Nebius inference still returns HTTP 402. Final video absent and official submission not sent.

@@ -8,4 +8,4 @@
 | Real integration test | BLOCKED | Tavily search succeeds; Nebius inference returned HTTP 402 |
 | Demonstration video | BLOCKED | Script, narration, graphics, and encoder prepared; actual app footage requires Nebius inference |
 | Public GitHub repository | COMPLETED | User approved; https://github.com/Kuattt/odsc-evidencetrail is PUBLIC and anonymously reachable (HTTP 200) |
-| Hackathon submission | NOT STARTED | Requires public URLs and final approval |
+| Hackathon submission | BLOCKED | Deadline passed at 2026-11-21 04:59 UTC; no real Nebius inference or public video URL, so final confirmation cannot be truthfully checked |
