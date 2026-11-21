@@ -1,0 +1,55 @@
+# EvidenceTrail
+
+EvidenceTrail is a research agent that turns a question into a traceable report. It uses [Nebius Token Factory](https://tokenfactory.nebius.com/) for planning, evidence evaluation, and synthesis, and [Tavily](https://tavily.com/) for live search. Every citation ID is checked against the retrieved source list before the report is shown.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Question] --> B[Nebius planner]
+    B --> C[Tavily focused searches]
+    C --> D[URL deduplication]
+    D --> E[Nebius evidence gap check]
+    E -->|Gap found| C
+    E --> F[Nebius synthesis]
+    F --> G[Citation ID validation]
+    G --> H[Report, source URLs, JSON trace]
+```
+
+## Setup
+
+1. Use Python 3.12 or newer and install `requirements.txt` into a virtual environment.
+2. Copy `.env.example` to `.env` and enter `NEBIUS_API_KEY`, `TAVILY_API_KEY`, and a model ID available in your Nebius account as `NEBIUS_MODEL`. `.env` is ignored by Git.
+3. Run `streamlit run app.py` from this directory.
+4. Ask a question of at least 12 characters and click **Research with live sources**.
+
+On this machine, dependencies may be installed in `.deps`; use `PYTHONPATH=.deps python3 -m streamlit run app.py`.
+
+## Research flow
+
+The planner makes two focused queries. Tavily returns source URLs and extracted snippets. EvidenceTrail merges duplicate URLs while preserving the first original URL. Nebius checks for a material gap and can request one extra search. It then writes a report using source IDs such as `[S1]`. Unknown citation IDs, reports without citations, and unverified URLs are rejected. The app displays the original source URLs and exports a JSON trace containing all search and inference steps.
+
+## Test
+
+```bash
+PYTHONPATH=.deps python3 -m pytest -q
+```
+
+The unit tests cover URL deduplication and fabricated citation rejection. A live integration run requires valid API keys and account credits; results must be recorded separately, never inferred from unit tests.
+
+## Example question
+
+> What does recent evidence say about the benefits and limitations of heat pumps in cold climates?
+
+Live results vary with the search index and model. Each run records its exact sources, queries, model, and event timestamps.
+
+## Limitations
+
+- Search snippets can omit context. Open the original sources before relying on important claims.
+- Citation validation verifies that an ID maps to a retrieved URL, not that the page supports every word of the claim.
+- EvidenceTrail does not independently establish source credibility or access paywalled content.
+- Availability, costs, and model IDs depend on the user's Nebius and Tavily accounts.
+
+## Integration evidence
+
+See `EVIDENCE.md` for the latest verified run. Do not treat an empty evidence record as a successful integration.

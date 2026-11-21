@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.deps/
+.ttsdeps/
+.venv/
+__pycache__/
+.pytest_cache/
+.streamlit/secrets.toml
+*.pyc
+media/demo/raw/
+media/demo/audio/
+media/demo/final/
+artifacts/
+SUBMISSION_DRAFT.md
