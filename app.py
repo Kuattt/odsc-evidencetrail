@@ -1,6 +1,7 @@
 """Streamlit interface for EvidenceTrail."""
 import json
 import os
+import re
 from pathlib import Path
 
 import streamlit as st
@@ -49,7 +50,9 @@ if "result" in st.session_state:
     c2.metric("Sources", len(result["sources"]))
     c3.metric("Nebius calls", result["nebius_calls"])
     st.subheader("Research report")
-    st.markdown(result["report"])
+    links = {source["id"]: source["url"] for source in result["sources"]}
+    linked_report = re.sub(r"\[(S\d+)\]", lambda match: f'[{match.group(1)}]({links[match.group(1)]})', result["report"])
+    st.markdown(linked_report)
     st.subheader("Original sources")
     for source in result["sources"]:
         with st.expander(f'[{source["id"]}] {source["title"]}'):

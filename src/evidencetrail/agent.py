@@ -141,7 +141,9 @@ class ResearchAgent:
         self.tavily_searches += 1
         results = []
         for item in response.get("results", []):
-            if item.get("url") and item.get("content"):
+            url = item.get("url") or ""
+            parsed = urlsplit(url)
+            if parsed.scheme in {"http", "https"} and parsed.netloc and item.get("content"):
                 results.append(Source(title=item.get("title") or item["url"], url=item["url"], content=item["content"][:4000], score=item.get("score"), queries=[query]))
         self._log("RESULTS", f"{len(results)} usable results from Tavily", on_event)
         return results

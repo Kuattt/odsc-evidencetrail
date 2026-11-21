@@ -21,13 +21,14 @@ FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 SCENES = [
-    (18, "Research questions are easy to ask. Trustworthy answers are harder. EvidenceTrail follows every claim back to a real source, so the path from question to conclusion stays visible."),
-    (24, "Here is a real question about heat pumps in cold climates. The application sends it to Nebius Token Factory, which plans two focused searches. The plan is shown as the run happens."),
-    (30, "Tavily searches the live web for each query. The agent records the exact query, original URL, extracted content, and result count. Duplicate URLs are merged. If the evidence leaves a material gap, the agent searches again."),
-    (30, "Nebius then evaluates the retrieved evidence and writes a concise report. It is instructed to distinguish supported facts from inference, identify disagreement, and describe uncertainty. This report is generated from the sources shown here, not a prepared answer."),
-    (28, "A citation like S one maps to a retrieved source URL. Open the source to inspect its original page and the passage returned by Tavily. EvidenceTrail rejects any citation ID that was never retrieved, and keeps a downloadable JSON trace of the run."),
-    (20, "The architecture is simple: Nebius plans. Tavily searches. EvidenceTrail evaluates and deduplicates. Nebius synthesizes. A final validator checks citations before the report appears."),
-    (10, "EvidenceTrail. Research you can trace. Explore the public repository for code, setup, and limitations."),
+    (18, "A useful research answer needs more than confident writing. It needs a path back to the original evidence. EvidenceTrail is an AI research agent designed to make that path visible, from the first question to every cited source and every uncertainty in the final report."),
+    (24, "We start with a practical question: what do recent studies say about heat pumps in cold climates? The question is entered in the real EvidenceTrail interface. Nebius Token Factory turns it into two focused searches, so the agent can examine different parts of the problem instead of relying on one broad query."),
+    (30, "Tavily runs those queries against the live web. The research trace shows each search and how many usable results came back. For every result, the agent keeps the original URL and extracted content. It merges repeated URLs without losing their query history. Nebius then checks whether a material evidence gap calls for one more search. If it does, Tavily searches again."),
+    (30, "Now the source material goes to Nebius for synthesis. The model receives only the retrieved titles, URLs, and snippets, with source IDs assigned by EvidenceTrail. Retrieved pages are treated as untrusted data. The model is asked to separate supported facts from inference, describe conflicting findings, and state what remains uncertain. This report comes from this live run, not a stored answer."),
+    (14, "The report uses short citation IDs, such as S one. Each ID resolves to an original source URL you can open and inspect. Here we expand a real result and compare it with the passage Tavily returned."),
+    (14, "This is the original public page behind the citation. EvidenceTrail rejects unknown IDs and unverified links before displaying a report. Downloadable JSON preserves the question, sources, model, and timestamped trace."),
+    (20, "Behind the interface, the flow is explicit. The user asks a question. Nebius plans focused searches. Tavily retrieves evidence. EvidenceTrail deduplicates and checks for gaps. Nebius writes the synthesis. Citation validation runs before the answer reaches the user. Each step is visible in the trace."),
+    (10, "EvidenceTrail. Research you can trace. The public repository includes the code, setup, tests, and honest limitations."),
 ]
 
 
@@ -83,9 +84,9 @@ def timestamp(seconds: float) -> str:
 
 def main() -> None:
     FINAL.mkdir(parents=True, exist_ok=True)
-    raw = sorted(RAW.glob("*.webm"), key=lambda p: p.stat().st_mtime)
-    required = [ASSETS / name for name in ("02_report.png", "03_sources.png")]
-    if not raw or any(not p.exists() for p in required):
+    raw = RAW / "app_run.webm"
+    required = [ASSETS / name for name in ("02_report.png", "03_sources.png", "04_source_detail.png", "06_original_page.png")]
+    if not raw.exists() or any(not p.exists() for p in required):
         raise RuntimeError("Actual app recording and report/source screenshots are required before rendering")
     card(ASSETS / "intro.png", "EvidenceTrail", "AI research with a visible evidence trail")
     architecture_steps = ["Question", "Nebius plan", "Tavily search", "Evaluate", "Nebius report", "Validate citations"]
@@ -107,7 +108,7 @@ def main() -> None:
     srt = []
     parts = []
     offset = 0
-    visuals = [ASSETS / "intro.png", raw[-1], raw[-1], ASSETS / "02_report.png", ASSETS / "03_sources.png", architecture_video, ASSETS / "outro.png"]
+    visuals = [ASSETS / "intro.png", raw, raw, ASSETS / "02_report.png", ASSETS / "04_source_detail.png", ASSETS / "06_original_page.png", architecture_video, ASSETS / "outro.png"]
     for i, ((seconds, narration), visual) in enumerate(zip(SCENES, visuals), 1):
         wav = AUDIO / f"scene_{i:02}.wav"
         spoken_text = narration.replace("Nebius", "Neh bee us").replace("Tavily", "Tah villy")

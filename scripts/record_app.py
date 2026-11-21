@@ -2,6 +2,7 @@
 import json
 import time
 from pathlib import Path
+import shutil
 
 from playwright.sync_api import sync_playwright
 
@@ -50,7 +51,7 @@ def main():
             time.sleep(6)
             source_link = page.get_by_role("link", name="Open original source").first
             source_url = source_link.get_attribute("href")
-            if source_url and source_url.startswith("https://"):
+            if source_url and source_url.startswith(("https://", "http://")):
                 source_page = context.new_page()
                 source_page.goto(source_url, wait_until="domcontentloaded", timeout=30000)
                 time.sleep(4)
@@ -66,7 +67,9 @@ def main():
         video = page.video
         context.close()
         browser.close()
-        print("Recorded actual app interaction:", video.path())
+        destination = RAW / "app_run.webm"
+        shutil.move(video.path(), destination)
+        print("Recorded actual app interaction:", destination)
         print("Screenshots:", len(list(ASSETS.glob("0*.png"))))
 
 

@@ -1,13 +1,16 @@
-# EvidenceTrail demo narration draft
+# EvidenceTrail demo narration
 
-The narration and captions must be finalized against the actual live run. Planned English voiceover:
+English narration used by `scripts/render_video.py`. Visuals must come from the genuine live run.
 
 | Time | Narration | Visual |
 | --- | --- | --- |
-| 0:00–0:20 | Research is easy to start and hard to verify. EvidenceTrail keeps the evidence visible from question to report. | Title and problem statement |
-| 0:20–0:45 | Enter a research question. The agent asks Nebius Token Factory to turn it into focused search queries. | Actual Streamlit interface and submitted question |
-| 0:45–1:20 | Tavily searches the live web. EvidenceTrail records queries, source URLs, and extracted snippets, then removes duplicate URLs. | Actual trace and source list |
-| 1:20–1:55 | Nebius checks the evidence for gaps and synthesizes a report using only the retrieved material. | Actual inference trace and generated report |
-| 1:55–2:25 | Each source ID leads to its original URL. The report separates evidence, inference, and uncertainty. Unknown citation IDs are rejected. | Open actual links and validation trace |
-| 2:25–2:50 | The flow connects planning, live search, evidence evaluation, synthesis, and citation validation. | Animated architecture graphic |
-| 2:50–3:00 | EvidenceTrail. Research you can trace. | Title, real public repository URL if published |
+| 0:00–0:18 | A useful research answer needs more than confident writing. It needs a path back to the original evidence. EvidenceTrail is an AI research agent designed to make that path visible, from the first question to every cited source and every uncertainty in the final report. | Title and problem |
+| 0:18–0:42 | We start with a practical question: what do recent studies say about heat pumps in cold climates? The question is entered in the real EvidenceTrail interface. Nebius Token Factory turns it into two focused searches, so the agent can examine different parts of the problem instead of relying on one broad query. | Actual Streamlit question entry |
+| 0:42–1:12 | Tavily runs those queries against the live web. The research trace shows each search and how many usable results came back. For every result, the agent keeps the original URL and extracted content. It merges repeated URLs without losing their query history. Nebius then checks whether a material evidence gap calls for one more search. If it does, Tavily searches again. | Actual Tavily search trace |
+| 1:12–1:42 | Now the source material goes to Nebius for synthesis. The model receives only the retrieved titles, URLs, and snippets, with source IDs assigned by EvidenceTrail. Retrieved pages are treated as untrusted data. The model is asked to separate supported facts from inference, describe conflicting findings, and state what remains uncertain. This report comes from this live run, not a stored answer. | Actual Nebius report |
+| 1:42–1:56 | The report uses short citation IDs, such as S one. Each ID resolves to an original source URL you can open and inspect. Here we expand a real result and compare it with the passage Tavily returned. | Actual source detail |
+| 1:56–2:10 | This is the original public page behind the citation. EvidenceTrail rejects unknown IDs and unverified links before displaying a report. Downloadable JSON preserves the question, sources, model, and timestamped trace. | Actual original source page |
+| 2:10–2:30 | Behind the interface, the flow is explicit. The user asks a question. Nebius plans focused searches. Tavily retrieves evidence. EvidenceTrail deduplicates and checks for gaps. Nebius writes the synthesis. Citation validation runs before the answer reaches the user. Each step is visible in the trace. | Animated architecture |
+| 2:30–2:40 | EvidenceTrail. Research you can trace. The public repository includes the code, setup, tests, and honest limitations. | Outro and public GitHub URL |
+
+Target duration: 160 seconds. Pronunciation cues for local TTS: Nebius → “Neh bee us”; Tavily → “Tah villy”.

@@ -38,7 +38,7 @@ For a CLI live run that saves the JSON trace under the ignored `artifacts/` dire
 
 ## Research flow
 
-The planner makes two focused queries. Tavily returns source URLs and extracted snippets. EvidenceTrail merges duplicate URLs while preserving the first original URL. Nebius checks for a material gap and can request one extra search. It then writes a report using source IDs such as `[S1]`. Unknown citation IDs, reports without citations, and unverified URLs are rejected. The app displays the original source URLs and exports a JSON trace containing all search and inference steps.
+The planner makes two focused queries. Tavily returns source URLs and extracted snippets. EvidenceTrail merges duplicate URLs while preserving the first original URL. Nebius checks for a material gap and can request one extra search. It then writes a report using source IDs such as `[S1]`. Unknown citation IDs, reports without citations, and unverified URLs are rejected. Valid IDs become links to the exact retrieved URLs in the app. The app also exports a JSON trace containing all search and inference steps.
 
 ## Test
 
