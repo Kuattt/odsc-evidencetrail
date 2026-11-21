@@ -5,10 +5,12 @@ import re
 import subprocess
 import os
 import sys
+import wave
 from pathlib import Path
 
 import imageio_ffmpeg
 import pyttsx3
+import requests
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,7 +90,12 @@ def main() -> None:
     card(ASSETS / "intro.png", "EvidenceTrail", "AI research with a visible evidence trail")
     architecture_steps = ["Question", "Nebius plan", "Tavily search", "Evaluate", "Nebius report", "Validate citations"]
     architecture_video = architecture_animation(architecture_steps)
-    card(ASSETS / "outro.png", "EvidenceTrail", "Research you can trace")
+    repo_url = os.getenv("REPO_URL", "").strip()
+    if repo_url:
+        response = requests.get(repo_url, timeout=15)
+        if response.status_code != 200:
+            raise RuntimeError("Repository URL is not publicly readable; cannot display it in video")
+    card(ASSETS / "outro.png", "EvidenceTrail", repo_url or "Research you can trace")
     voice_model = AUDIO / "voices" / "en_US-lessac-medium.onnx"
     voice = None
     if not voice_model.exists():
@@ -104,17 +111,19 @@ def main() -> None:
     for i, ((seconds, narration), visual) in enumerate(zip(SCENES, visuals), 1):
         wav = AUDIO / f"scene_{i:02}.wav"
         spoken_text = narration.replace("Nebius", "Neh bee us").replace("Tavily", "Tah villy")
-        if voice_model.exists():
-            env = os.environ.copy()
-            env["PYTHONPATH"] = str(ROOT / ".ttsdeps")
-            subprocess.run([sys.executable, "-m", "piper", "-m", str(voice_model), "-f", str(wav)], input=spoken_text, text=True, check=True, env=env, capture_output=True)
-        else:
-            voice.save_to_file(spoken_text, str(wav))
-            voice.runAndWait()
+        if not wav.exists():
+            if voice_model.exists():
+                env = os.environ.copy()
+                env["PYTHONPATH"] = str(ROOT / ".ttsdeps")
+                subprocess.run([sys.executable, "-m", "piper", "-m", str(voice_model), "-f", str(wav)], input=spoken_text, text=True, check=True, env=env, capture_output=True)
+            else:
+                voice.save_to_file(spoken_text, str(wav))
+                voice.runAndWait()
         sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", narration) if s.strip()]
         weights = [len(s.split()) for s in sentences]
         cursor = offset + 0.5
-        spoken = seconds - 2
+        with wave.open(str(wav)) as sample:
+            spoken = min(sample.getnframes() / sample.getframerate(), seconds - 1)
         for sentence, weight in zip(sentences, weights):
             length = spoken * weight / sum(weights)
             srt.append(f"{len(srt)+1}\n{timestamp(cursor)} --> {timestamp(cursor+length)}\n{sentence}\n")
@@ -133,7 +142,7 @@ def main() -> None:
     joined = RAW / "joined.mp4"
     run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(listing), "-c", "copy", str(joined)])
     destination = FINAL / "EvidenceTrail_ODSC_Demo.mp4"
-    run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", str(joined), "-vf", f"subtitles={ASSETS / 'captions.srt'}:force_style='FontName=DejaVu Sans,FontSize=26,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=2,Shadow=1,MarginV=60'", "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-c:a", "copy", str(destination)])
+    run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", "-i", str(joined), "-vf", f"subtitles={ASSETS / 'captions.srt'}:force_style='FontName=DejaVu Sans,FontSize=17,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=2,Shadow=1,MarginV=45'", "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-c:a", "copy", str(destination)])
     print(destination)
     print("Expected duration:", offset)
 

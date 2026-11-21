@@ -11,8 +11,12 @@ from src.evidencetrail.agent import ResearchAgent
 load_dotenv(Path(__file__).parent / ".env")
 st.set_page_config(page_title="EvidenceTrail", page_icon="🔎", layout="wide")
 st.markdown("""<style>
-.block-container {max-width: 1100px; padding-top: 2rem}
+.block-container {max-width: 1320px; padding-top: 2.5rem}
 h1,h2,h3 {letter-spacing: -.03em}
+h1 {font-size: 4rem !important}
+h2 {font-size: 2rem !important}
+div[data-testid='stMarkdown'] p, div[data-testid='stMarkdown'] li {font-size: 1.16rem; line-height: 1.6}
+textarea, button, label {font-size: 1.12rem !important}
 div[data-testid='stMetric'] {background: #101b2d; padding: 1rem; border-radius: .7rem}
 div[data-testid='stToolbar'] {display: none}
 </style>""", unsafe_allow_html=True)

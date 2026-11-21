@@ -48,6 +48,15 @@ def main():
             time.sleep(4)
             page.screenshot(path=str(ASSETS / "04_source_detail.png"))
             time.sleep(6)
+            source_link = page.get_by_role("link", name="Open original source").first
+            source_url = source_link.get_attribute("href")
+            if source_url and source_url.startswith("https://"):
+                source_page = context.new_page()
+                source_page.goto(source_url, wait_until="domcontentloaded", timeout=30000)
+                time.sleep(4)
+                source_page.screenshot(path=str(ASSETS / "06_original_page.png"))
+                print("Opened original source:", source_page.url)
+                source_page.close()
         trace = page.get_by_text("Reproducible research trace", exact=True)
         trace.scroll_into_view_if_needed()
         trace.click()
