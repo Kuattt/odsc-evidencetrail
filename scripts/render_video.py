@@ -131,7 +131,10 @@ def main() -> None:
             cursor += length
         part = RAW / f"scene_{i:02}.mp4"
         if visual.suffix in {".webm", ".mp4"}:
-            source_args = ["-stream_loop", "-1", "-i", str(visual)]
+            source_args = ["-stream_loop", "-1"]
+            if i == 3 and visual == raw:
+                source_args += ["-ss", "18"]
+            source_args += ["-i", str(visual)]
         else:
             source_args = ["-loop", "1", "-framerate", "30", "-i", str(visual)]
         run([FFMPEG, "-y", "-hide_banner", "-loglevel", "error", *source_args, "-i", str(wav), "-t", str(seconds), "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,format=yuv420p,fade=t=in:st=0:d=0.35,fade=t=out:st=" + str(seconds - .35) + ":d=0.35", "-af", "apad", "-r", "30", "-c:v", "libx264", "-preset", "ultrafast", "-crf", "22", "-c:a", "aac", "-b:a", "160k", str(part)])

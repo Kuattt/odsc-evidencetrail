@@ -1,6 +1,6 @@
 # Production notes
 
-Status: planned. No live app footage or final video has been created yet.
+Status: preproduction ready. Narration WAV files, title graphics, architecture animation, and FFmpeg caption encoding have been tested. No successful live app footage or final video exists yet because Nebius inference returns HTTP 402.
 
 - Required: actual Streamlit run, successful Nebius and Tavily calls, captured report and original source URLs.
 - Output target: H.264 MP4, 1920 × 1080, 16:9, 120–180 seconds with narration and captions.
