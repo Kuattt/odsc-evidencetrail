@@ -122,7 +122,13 @@ class ResearchAgent:
     def _json_list(value: str, fallback: list[str]) -> list[str]:
         try:
             cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", value.strip())
-            parsed = json.loads(cleaned)
+            try:
+                parsed = json.loads(cleaned)
+            except json.JSONDecodeError:
+                candidate = re.search(r"\[[\s\S]*\]", cleaned)
+                if not candidate:
+                    raise
+                parsed = json.loads(candidate.group(0))
             if isinstance(parsed, dict):
                 parsed = parsed.get("queries", [])
             if isinstance(parsed, list):
@@ -154,7 +160,7 @@ class ResearchAgent:
             raise ValueError("Question must be between 12 and 1000 characters")
         self.trace, self.nebius_calls, self.tavily_searches = [], 0, 0
         plan_prompt = f"Research question: {question}\nReturn only a JSON list of 2 focused web search queries that cover distinct aspects."
-        plan = self._json_list(self._infer(plan_prompt, on_event), [question])[:2]
+        plan = self._json_list(self._infer(plan_prompt, on_event), [question + " recent evidence", question + " limitations and conflicting studies"])[:2]
         self._log("PLAN", " | ".join(plan), on_event)
         found = [source for query in plan for source in self._search(query, on_event)]
         sources = deduplicate(found)

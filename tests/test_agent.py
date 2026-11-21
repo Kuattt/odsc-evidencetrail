@@ -1,6 +1,6 @@
 import pytest
 
-from src.evidencetrail.agent import Source, canonical_url, deduplicate, validate_citations
+from src.evidencetrail.agent import ResearchAgent, Source, canonical_url, deduplicate, validate_citations
 
 
 def test_deduplicate_preserves_original_url_and_queries():
@@ -21,3 +21,8 @@ def test_rejects_fabricated_citation():
     with pytest.raises(ValueError, match="no source citations"):
         validate_citations("Unsupported claim", sources)
     validate_citations("Supported claim [S1]", sources)
+
+
+def test_query_parser_handles_model_preface_and_empty_gap():
+    assert ResearchAgent._json_list('Here are the queries: ["cold climate performance", "installation costs"]', []) == ["cold climate performance", "installation costs"]
+    assert ResearchAgent._json_list("[]", []) == []
